@@ -44,14 +44,13 @@ const HomeScreen = () => {
             Sensação Térmica: {Math.round(dadosClima.main.feels_like)}°C
           </Text>
 
-          {/* Exibindo previsão futura (essa funcionalidade pode ser aprimorada integrando com outra API para previsão de 7 dias) */}
           <Text style={styles.forecastTitle}>Previsão para os próximos dias</Text>
           <ScrollView horizontal style={styles.forecastContainer}>
             <View style={styles.forecastDay}>
               <Text style={styles.day}>Sex</Text>
               <Image
                 style={styles.forecastIcon}
-                source={{ uri: getWeatherIcon('01d') }} // Ícone genérico de exemplo
+                source={{ uri: getWeatherIcon('01d') }} 
               />
               <Text style={styles.forecastTemp}>19°C</Text>
             </View>
@@ -59,7 +58,7 @@ const HomeScreen = () => {
               <Text style={styles.day}>Sáb</Text>
               <Image
                 style={styles.forecastIcon}
-                source={{ uri: getWeatherIcon('01n') }} // Ícone genérico de exemplo
+                source={{ uri: getWeatherIcon('01n') }} 
               />
               <Text style={styles.forecastTemp}>20°C</Text>
             </View>
@@ -67,7 +66,7 @@ const HomeScreen = () => {
               <Text style={styles.day}>Dom</Text>
               <Image
                 style={styles.forecastIcon}
-                source={{ uri: getWeatherIcon('04d') }} // Ícone genérico de exemplo
+                source={{ uri: getWeatherIcon('04d') }}
               />
               <Text style={styles.forecastTemp}>18°C</Text>
             </View>
