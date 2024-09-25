@@ -49,8 +49,7 @@
                 Sensação Térmica: {Math.round(dadosClima.main.feels_like)}°C
               </Text>
 
-              {/* Exibindo previsão futura */}
-              <Text style={styles.forecastTitle}>Forecast the next 7 days</Text>
+              <Text style={styles.forecastTitle}>Previsão para os Próximos 3 Dias</Text>
               <ScrollView horizontal style={styles.forecastContainer}>
                 <View style={styles.forecastDay}>
                   <Text style={styles.day}>Fri</Text>
