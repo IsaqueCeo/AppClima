@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-// Dados das cidades
+
 const cityData = {
   Teresina: {
     image: require('../assets/teresina.png'),
@@ -14,7 +14,36 @@ const cityData = {
     description: 'Timon é uma cidade vizinha a Teresina, no Maranhão, com uma rica história cultural.',
     touristSpots: ['Balneário São Francisco', 'Mercado Velho']
   },
-  // Adicione mais cidades se necessário
+  Parnaiba: {
+    image: require('../assets/parnaiba.png'),
+    description: 'Parnaíba é uma cidade histórica, conhecida pela sua cultura e proximidade com o Delta do Parnaíba.',
+    touristSpots: ['Delta do Parnaíba', 'Praia de Barroquinha', 'Igreja de Nossa Senhora da Graça']
+  },
+  Campo_Maior: {
+    image: require('../assets/campo_maior.png'),
+    description: 'Campo Maior é famosa por suas festas religiosas e pelo comércio de artesanato.',
+    touristSpots: ['Museu Histórico de Campo Maior', 'Catedral de Santo Antônio']
+  },
+  Sete_Cidades: {
+    image: require('../assets/sete_cidades.png'),
+    description: 'Sete Cidades é conhecida pelo Parque Nacional de Sete Cidades, um lugar cheio de formações rochosas e lendas.',
+    touristSpots: ['Parque Nacional de Sete Cidades', 'Formações Rochosas']
+  },
+  // Oeiras: {
+  //   image: require('../assets/oeiras.png'),
+  //   description: 'Oeiras é a primeira capital do Piauí e é conhecida por seu patrimônio histórico.',
+  //   touristSpots: ['Igreja de Nossa Senhora da Vitória', 'Palácio da Cidade']
+  // },
+  // Floriano: {
+  //   image: require('../assets/floriano.png'),
+  //   description: 'Floriano é um importante polo comercial e de serviços da região sul do Piauí.',
+  //   touristSpots: ['Museu de Floriano', 'Praça da Independência']
+  // },
+  // Picos: {
+  //   image: require('../assets/picos.png'),
+  //   description: 'Picos é conhecida por suas tradições culturais e festas populares.',
+  //   touristSpots: ['Igreja de São José', 'Parque de Exposições']
+  // },
 };
 
 const CategoryScreen = ({ route }) => {

@@ -2,8 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-// Lista de cidades
-const cities = ['Teresina', 'Timon', 'Parnaíba', 'Campo Maior', 'Sete Cidades', 'Oeiras', 'Floriano', 'Picos'];
+const cities = ['Teresina', 'Timon', 'Parnaiba', 'Campo_Maior', 'Sete_Cidades', 'Oeiras', 'Floriano', 'Picos'];
 
 const DetailsScreen = () => {
   const navigation = useNavigation();
@@ -14,7 +13,7 @@ const DetailsScreen = () => {
         <TouchableOpacity
           key={index}
           style={styles.cityButton}
-          onPress={() => navigation.navigate('Category', { cidade: city })}  // Corrigi para 'Category'
+          onPress={() => navigation.navigate('Category', { cidade: city })}
         >
           <Text style={styles.cityName}>{city}</Text>
         </TouchableOpacity>
