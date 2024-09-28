@@ -3,11 +3,15 @@
   import { LinearGradient } from 'expo-linear-gradient';
   import axios from 'axios';
 
+
+      
+
+
   const WeatherScreen = ({ navigation }) => {
     const [cidade, setCidade] = useState('Teresina');
     const [dadosClima, setDadosClima] = useState(null);
     const apiKey = '11371fa143855be92f85ee055f29a258';
-
+        
     useEffect(() => {
       buscarClima();
     }, []);

@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { useNavigation } from '@react-navigation/native';
 
 const cityData = {
   Teresina: {
@@ -48,6 +48,7 @@ const cityData = {
 
 const CategoryScreen = ({ route }) => {
   const cidade = route?.params?.cidade;
+  const navigation = useNavigation();
 
   if (!cidade) {
     return (
@@ -82,6 +83,10 @@ const CategoryScreen = ({ route }) => {
             {index + 1}. {spot}
           </Text>
         ))}
+
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Details')}>
+          <Text style={styles.backButtonText}>Voltar para Detalhes</Text>
+        </TouchableOpacity>
       </ScrollView>
     </LinearGradient>
   );
@@ -131,6 +136,24 @@ const styles = StyleSheet.create({
   errorMessage: {
     fontSize: 18,
     color: 'red',
+  },
+  backButton: {
+    backgroundColor: '#FFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  backButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#0A0C14',
+    textAlign: 'center',
   },
 });
 
