@@ -1,39 +1,85 @@
-  import React, { useState, useEffect } from 'react';
-  import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-  import { LinearGradient } from 'expo-linear-gradient';
-  import axios from 'axios';
-  
-  const WeatherScreen = ({ navigation }) => {
-    const [cidade, setCidade] = useState('Teresina');
-    const [dadosClima, setDadosClima] = useState(null);
-    const apiKey = '11371fa143855be92f85ee055f29a258';
-        
-    useEffect(() => {
-      buscarClima();
-    }, []);
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Location from 'expo-location';
+import axios from 'axios';
 
-    const buscarClima = async () => {
-      try {
-        const response = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${apiKey}&units=metric&lang=pt_br`
-        );
-        setDadosClima(response.data);
-      } catch (error) {
-        console.error('Erro ao buscar os dados.', error);
+const WeatherScreen = ({ navigation }) => {
+  const [cidade, setCidade] = useState(null);
+  const [dadosClima, setDadosClima] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const apiKey = '11371fa143855be92f85ee055f29a258';
+    
+  useEffect(() => {
+    buscarLocalizacao();
+  }, []);
+
+  const buscarLocalizacao = async () => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permissão de localização negada');
+        setLoading(false);
+        return;
       }
-    };
+      
+      let location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
 
-    const getWeatherIcon = (icon) => {
-      return `https://openweathermap.org/img/wn/${icon}@2x.png`;
-    };
+      const response = await axios.get(
+        `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${apiKey}`
+      );
+      
+      if (response.data && response.data.length > 0) {
+        const cidadeNome = response.data[0].name;
+        setCidade(cidadeNome);
+        buscarClima(cidadeNome);
+      } else {
+        setErrorMsg('Não foi possível determinar a cidade pela localização');
+        setLoading(false);
+      }
+    } catch (error) {
+      setErrorMsg('Erro ao obter localização.');
+      setLoading(false);
+    }
+  };
 
+  const buscarClima = async (cidade) => {
+    try {
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${apiKey}&units=metric&lang=pt_br`
+      );
+      setDadosClima(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Erro ao buscar os dados.', error);
+      setLoading(false);
+    }
+  };
+
+  const getWeatherIcon = (icon) => {
+    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
+  };
+
+  if (loading) {
     return (
-      <LinearGradient
-        colors={['#0A0C14', '#17243E', '#050D19']}
-        style={styles.gradientBackground}
-      >
-        <View style={styles.container}>
-          {dadosClima ? (
+      <View style={styles.container}>
+        <Text style={styles.loading}>Carregando...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <LinearGradient
+      colors={['#0A0C14', '#17243E', '#050D19']}
+      style={styles.gradientBackground}
+    >
+      <View style={styles.container}>
+        {errorMsg ? (
+          <Text style={styles.loading}>{errorMsg}</Text>
+        ) : (
+          dadosClima && (
             <View style={styles.weatherContainer}>
               <Text style={styles.cityName}>{dadosClima.name}</Text>
               <Image
@@ -84,112 +130,111 @@
                 <Text style={styles.customButtonText}>Destinos</Text>
               </TouchableOpacity>
             </View>
-          ) : (
-            <Text style={styles.loading}>Carregando...</Text>
-          )}
-        </View>
-      </LinearGradient>
-    );
-  };
+          )
+        )}
+      </View>
+    </LinearGradient>
+  );
+};
 
-  const styles = StyleSheet.create({
-    gradientBackground: {
-      flex: 1,
-    },
-    container: {
-      flex: 1,
-      paddingHorizontal: 20,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    weatherContainer: {
-      alignItems: 'center',
-    },
-    cityName: {
-      color: '#fff',
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginTop: 20,
-    },
-    weatherIcon: {
-      width: 100,
-      height: 100,
-      marginVertical: 20,
-    },
-    temperature: {
-      color: '#fff',
-      fontSize: 48,
-      fontWeight: 'bold',
-    },
-    weatherDescription: {
-      color: '#aaa',
-      fontSize: 18,
-      textTransform: 'capitalize',
-      marginVertical: 10,
-    },
-    minMaxTemp: {
-      color: '#fff',
-      fontSize: 16,
-    },
-    feelsLike: {
-      color: '#fff',
-      fontSize: 16,
-      marginVertical: 10,
-    },
-    forecastTitle: {
-      color: '#fff',
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginVertical: 20,
-    },
-    forecastContainer: {
-      flexDirection: 'row',
-    },
-    forecastDay: {
-      alignItems: 'center',
-      marginHorizontal: 10,
-      backgroundColor: '#1c1c1e',
-      borderRadius: 15,
-      padding: 15,
-      width: 100,
-    },
-    day: {
-      color: '#fff',
-      fontSize: 16,
-      marginBottom: 5,
-    },
-    forecastIcon: {
-      width: 50,
-      height: 50,
-      marginBottom: 5,
-    },
-    forecastTemp: {
-      color: '#fff',
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    customButton: {
-      backgroundColor: '#fff',
-      paddingVertical: 15,
-      paddingHorizontal: 60,
-      borderRadius: 25,
-      marginTop: 30,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-      shadowRadius: 4.65,
-      elevation: 8,
-    },
-    customButtonText: {
-      color: '#000',
-      fontSize: 18,
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-    loading: {
-      color: '#fff',
-      fontSize: 20,
-    },
-  });
+const styles = StyleSheet.create({
+  gradientBackground: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  weatherContainer: {
+    alignItems: 'center',
+  },
+  cityName: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 20,
+  },
+  weatherIcon: {
+    width: 100,
+    height: 100,
+    marginVertical: 20,
+  },
+  temperature: {
+    color: '#fff',
+    fontSize: 48,
+    fontWeight: 'bold',
+  },
+  weatherDescription: {
+    color: '#aaa',
+    fontSize: 18,
+    textTransform: 'capitalize',
+    marginVertical: 10,
+  },
+  minMaxTemp: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  feelsLike: {
+    color: '#fff',
+    fontSize: 16,
+    marginVertical: 10,
+  },
+  forecastTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 20,
+  },
+  forecastContainer: {
+    flexDirection: 'row',
+  },
+  forecastDay: {
+    alignItems: 'center',
+    marginHorizontal: 10,
+    backgroundColor: '#1c1c1e',
+    borderRadius: 15,
+    padding: 15,
+    width: 100,
+  },
+  day: {
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  forecastIcon: {
+    width: 50,
+    height: 50,
+    marginBottom: 5,
+  },
+  forecastTemp: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  customButton: {
+    backgroundColor: '#fff',
+    paddingVertical: 15,
+    paddingHorizontal: 60,
+    borderRadius: 25,
+    marginTop: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+  customButtonText: {
+    color: '#000',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  loading: {
+    color: '#fff',
+    fontSize: 20,
+  },
+});
 
-  export default WeatherScreen;
+export default WeatherScreen;
